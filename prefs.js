@@ -1,6 +1,7 @@
 import Gio from 'gi://Gio';
 import Adw from 'gi://Adw';
 import Gtk from 'gi://Gtk';
+import Gdk from 'gi://Gdk';
 import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 export default class ActivateLinuxPreferences extends ExtensionPreferences {
@@ -59,9 +60,48 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
             title: _('Font Color (CSS/RGBA)'),
             text: settings.get_string('font-color'),
         });
-        fontColorRow.connect('notify::text', () => {
-            settings.set_string('font-color', fontColorRow.text);
+        
+        // Setup ColorDialogButton
+        const colorDialog = new Gtk.ColorDialog();
+        const colorButton = new Gtk.ColorDialogButton({
+            dialog: colorDialog,
+            valign: Gtk.Align.CENTER,
+            tooltip_text: _('Choose Font Color'),
         });
+        
+        // Helper to convert GTK color to CSS string
+        function rgbaToCssString(rgba) {
+            return `rgba(${Math.round(rgba.red * 255)}, ${Math.round(rgba.green * 255)}, ${Math.round(rgba.blue * 255)}, ${rgba.alpha.toFixed(2)})`;
+        }
+
+        // Initialize colorButton state
+        const initialRgba = new Gdk.RGBA();
+        const parsed = initialRgba.parse(fontColorRow.text);
+        if (parsed)
+            colorButton.set_rgba(initialRgba);
+
+        // Update settings when text entry changes
+        fontColorRow.connect('notify::text', () => {
+            const currentText = fontColorRow.text;
+            settings.set_string('font-color', currentText);
+            
+            // Sync with color button if valid
+            const newRgba = new Gdk.RGBA();
+            if (newRgba.parse(currentText))
+                colorButton.set_rgba(newRgba);
+        });
+        
+        // Update text entry when color button changes
+        colorButton.connect('notify::rgba', () => {
+            const rgba = colorButton.get_rgba();
+            if (rgba) {
+                const cssStr = rgbaToCssString(rgba);
+                if (cssStr !== fontColorRow.text)
+                    fontColorRow.text = cssStr;
+            }
+        });
+
+        fontColorRow.add_suffix(colorButton);
         group.add(fontColorRow);
 
         const positionGroup = new Adw.PreferencesGroup({
