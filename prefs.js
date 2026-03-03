@@ -104,11 +104,46 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
         fontColorRow.add_suffix(colorButton);
         group.add(fontColorRow);
 
+        // Text Shadow
+        const textShadowRow = new Adw.SwitchRow({
+            title: _('Enable Text Shadow'),
+            subtitle: _('Adds a shadow to the text to improve readability on varied backgrounds'),
+            active: settings.get_boolean('enable-text-shadow'),
+        });
+        textShadowRow.connect('notify::active', () => {
+            settings.set_boolean('enable-text-shadow', textShadowRow.active);
+        });
+        group.add(textShadowRow);
+
+        // Background Plate
+        const backgroundRow = new Adw.SwitchRow({
+            title: _('Enable Background Plate'),
+            subtitle: _('Adds a semi-transparent dark background box behind the text'),
+            active: settings.get_boolean('enable-background'),
+        });
+        backgroundRow.connect('notify::active', () => {
+            settings.set_boolean('enable-background', backgroundRow.active);
+        });
+        group.add(backgroundRow);
+
         const positionGroup = new Adw.PreferencesGroup({
             title: _('Position & Size'),
             description: _('Configure the size and position on the screen'),
         });
         page.add(positionGroup);
+
+        // Corner Position
+        const cornerPositions = ['bottom-right', 'bottom-left', 'top-right', 'top-left'];
+        const cornerPositionRow = new Adw.ComboRow({
+            title: _('Corner Position'),
+            model: Gtk.StringList.new([_('Bottom Right'), _('Bottom Left'), _('Top Right'), _('Top Left')]),
+        });
+        const currentCorner = settings.get_string('corner-position');
+        cornerPositionRow.selected = Math.max(0, cornerPositions.indexOf(currentCorner));
+        cornerPositionRow.connect('notify::selected', () => {
+            settings.set_string('corner-position', cornerPositions[cornerPositionRow.selected]);
+        });
+        positionGroup.add(cornerPositionRow);
 
         // Font Size
         const fontSizeRow = new Adw.SpinRow({
@@ -125,9 +160,9 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
         });
         positionGroup.add(fontSizeRow);
 
-        // X Position
+        // X Margin
         const posXRow = new Adw.SpinRow({
-            title: _('X Margin (Right)'),
+            title: _('X Margin'),
             adjustment: new Gtk.Adjustment({
                 lower: 0,
                 upper: 4000,
@@ -140,9 +175,9 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
         });
         positionGroup.add(posXRow);
 
-        // Y Position
+        // Y Margin
         const posYRow = new Adw.SpinRow({
-            title: _('Y Margin (Bottom)'),
+            title: _('Y Margin'),
             adjustment: new Gtk.Adjustment({
                 lower: 0,
                 upper: 4000,
@@ -174,6 +209,43 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
             _('Press Backspace to clear')
         );
         positionGroup.add(shortcutRow);
+
+        const monitorsGroup = new Adw.PreferencesGroup({
+            title: _('Monitors'),
+            description: _('Configure which monitors the watermark appears on'),
+        });
+        page.add(monitorsGroup);
+
+        // Monitor Preference
+        const monitorPrefs = ['primary', 'all', 'index'];
+        const monitorPrefRow = new Adw.ComboRow({
+            title: _('Monitor Preference'),
+            model: Gtk.StringList.new([_('Primary Display Only'), _('All Displays'), _('Specific Display')]),
+        });
+        const currentPref = settings.get_string('monitor-preference');
+        monitorPrefRow.selected = Math.max(0, monitorPrefs.indexOf(currentPref));
+        monitorsGroup.add(monitorPrefRow);
+
+        // Monitor Index
+        const monitorIndexRow = new Adw.SpinRow({
+            title: _('Display Index'),
+            adjustment: new Gtk.Adjustment({
+                lower: 0,
+                upper: 10,
+                step_increment: 1,
+            }),
+            value: settings.get_int('monitor-index'),
+            sensitive: (currentPref === 'index'),
+        });
+        monitorIndexRow.connect('notify::value', () => {
+            settings.set_int('monitor-index', monitorIndexRow.value);
+        });
+        monitorsGroup.add(monitorIndexRow);
+
+        monitorPrefRow.connect('notify::selected', () => {
+            settings.set_string('monitor-preference', monitorPrefs[monitorPrefRow.selected]);
+            monitorIndexRow.sensitive = (monitorPrefs[monitorPrefRow.selected] === 'index');
+        });
 
         window.add(page);
     }

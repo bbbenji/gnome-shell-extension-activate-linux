@@ -27,7 +27,7 @@ jobs:
         run: glib-compile-schemas schemas/
 
       - name: Pack Extension
-        run: gnome-extensions pack --force --extra-source=README.md
+        run: gnome-extensions pack --force --extra-source=README.md --extra-source=shortcut_widget.js
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
