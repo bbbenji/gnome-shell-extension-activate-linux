@@ -10,7 +10,7 @@ A GNOME extension that adds an "Activate Linux" watermark to your desktop, inspi
 - Customizable appearance (Font face, style, size, color, text shadow, and background plate)
 - Customizable positioning (Corner selection, X and Y margins)
 - Multi-monitor support (Primary only, all monitors, or specific monitor index)
-- Display mode options (Show on desktop background only, or overlay on top of all windows)
+- Display mode options (Show on desktop background only, overlay on top of all windows, and show on lock screen)
 - Custom keyboard shortcut support to toggle window overlay mode (default: `<Super><Alt>w`)
 - Works on both X11 and Wayland
 
@@ -88,6 +88,7 @@ You can use the following dynamic placeholders in your messages:
 ### Behavior
 
 - **Show over all windows**: When enabled, the watermark overlays all open windows. When disabled, it stays on the desktop background.
+- **Show on Lock Screen**: When enabled, the watermark is visible when the screen is locked.
 - **Toggle overlay shortcut**: A customizable keyboard shortcut to quickly toggle the "Show over all windows" behavior (default: `<Super><Alt>w`).
 
 ## Screenshots

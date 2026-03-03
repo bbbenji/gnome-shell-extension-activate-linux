@@ -43,6 +43,10 @@ export default class ActivateLinuxExtension extends Extension {
       "monitors-changed",
       this._debouncedUpdate.bind(this),
     );
+    this._sessionModeChangedId = Main.sessionMode.connect(
+      "updated",
+      this._debouncedUpdate.bind(this)
+    );
 
     Main.wm.addKeybinding(
       "toggle-show-over-windows-shortcut",
@@ -72,6 +76,11 @@ export default class ActivateLinuxExtension extends Extension {
     if (this._monitorsChangedId) {
       Main.layoutManager.disconnect(this._monitorsChangedId);
       this._monitorsChangedId = null;
+    }
+
+    if (this._sessionModeChangedId) {
+      Main.sessionMode.disconnect(this._sessionModeChangedId);
+      this._sessionModeChangedId = null;
     }
 
     Main.wm.removeKeybinding("toggle-show-over-windows-shortcut");
@@ -168,6 +177,13 @@ export default class ActivateLinuxExtension extends Extension {
     const fontColor = this._settings.get_string("font-color");
     const fontSize = this._settings.get_int("font-size");
     const showOverWindows = this._settings.get_boolean("show-over-windows");
+    const showOnLockscreen = this._settings.get_boolean("show-on-lockscreen");
+    const isLocked = Main.sessionMode.currentMode === 'unlock-dialog';
+    
+    // If the screen is locked and we're not configured to show on it, hide everything.
+    if (isLocked && !showOnLockscreen) {
+        return;
+    }
     
     const enableShadow = this._settings.get_boolean("enable-text-shadow");
     const enableBackground = this._settings.get_boolean("enable-background");
@@ -181,7 +197,9 @@ export default class ActivateLinuxExtension extends Extension {
         const data = this._createContainer();
         data.monitorIndex = monitorIndex;
         
-        if (showOverWindows) {
+        if (isLocked && showOnLockscreen) {
+            Main.layoutManager.screenShieldGroup.add_child(data.container);
+        } else if (showOverWindows) {
             Main.layoutManager.uiGroup.add_child(data.container);
         } else {
             Main.layoutManager._backgroundGroup.add_child(data.container);

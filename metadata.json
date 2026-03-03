@@ -4,5 +4,9 @@
   "uuid": "activate-linux@bbbenji",
   "shell-version": ["47", "48", "49", "50"],
   "url": "https://github.com/bbbenji/gnome-shell-extension-activate-linux",
-  "settings-schema": "org.gnome.shell.extensions.activate-linux"
+  "settings-schema": "org.gnome.shell.extensions.activate-linux",
+  "session-modes": [
+    "user",
+    "unlock-dialog"
+  ]
 }

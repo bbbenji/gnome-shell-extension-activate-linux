@@ -46,6 +46,11 @@
       <summary>Show overlay over all windows</summary>
       <description>Whether to show the watermark overlaying all windows instead of just the desktop background.</description>
     </key>
+    <key name="show-on-lockscreen" type="b">
+      <default>false</default>
+      <summary>Show on Lock Screen</summary>
+      <description>Whether to show the watermark when the screen is locked.</description>
+    </key>
     <key name="toggle-show-over-windows-shortcut" type="as">
       <default><![CDATA[['<Super><Alt>w']]]></default>
       <summary>Toggle show over windows shortcut</summary>

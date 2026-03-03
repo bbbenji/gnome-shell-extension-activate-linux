@@ -201,6 +201,17 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
         });
         positionGroup.add(overlayRow);
 
+        // Show on Lock Screen
+        const lockscreenRow = new Adw.SwitchRow({
+            title: _('Show on Lock Screen'),
+            subtitle: _('Whether to be visible when the screen is locked'),
+            active: settings.get_boolean('show-on-lockscreen'),
+        });
+        lockscreenRow.connect('notify::active', () => {
+            settings.set_boolean('show-on-lockscreen', lockscreenRow.active);
+        });
+        positionGroup.add(lockscreenRow);
+
         // Toggle Shortcut
         const shortcutRow = new ShortcutSettingWidget(
             settings,
