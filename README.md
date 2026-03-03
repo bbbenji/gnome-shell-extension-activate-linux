@@ -1,3 +1,5 @@
+<img src="images/activate_linux.png" alt="Activate Linux Icon" width="128" />
+
 # Activate Linux
 
 A GNOME extension that adds an "Activate Linux" watermark to your desktop, inspired by the "Activate Windows" watermark.
@@ -87,3 +89,9 @@ You can use the following dynamic placeholders in your messages:
 
 - **Show over all windows**: When enabled, the watermark overlays all open windows. When disabled, it stays on the desktop background.
 - **Toggle overlay shortcut**: A customizable keyboard shortcut to quickly toggle the "Show over all windows" behavior (default: `<Super><Alt>w`).
+
+## Screenshots
+
+<a href="images/screenshot.png">
+  <img src="images/screenshot.png" alt="Screenshot thumbnail" width="300" />
+</a>
