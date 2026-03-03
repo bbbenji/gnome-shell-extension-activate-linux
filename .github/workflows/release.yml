@@ -23,11 +23,23 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gnome-shell
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Run Linter
+        run: npm run lint
+
       - name: Compile Schemas
         run: glib-compile-schemas schemas/
 
       - name: Pack Extension
-        run: gnome-extensions pack --force --extra-source=README.md --extra-source=shortcut_widget.js
+        run: gnome-extensions pack --force --extra-source=README.md --extra-source=shortcut_widget.js --extra-source=LICENSE
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4

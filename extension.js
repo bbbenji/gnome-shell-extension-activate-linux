@@ -20,13 +20,17 @@ export default class ActivateLinuxExtension extends Extension {
             const prettyNameMatch = osRelease.match(/^PRETTY_NAME="?(.*?)"?$/m);
             if (prettyNameMatch) this._osName = prettyNameMatch[1];
         }
-    } catch(e) {}
+    } catch {
+        /* ignore missing file */
+    }
     try {
         const [successKernel, contentsKernel] = GLib.file_get_contents('/proc/sys/kernel/osrelease');
         if (successKernel) {
             this._kernelVersion = new TextDecoder().decode(contentsKernel).trim();
         }
-    } catch(e) {}
+    } catch {
+        /* ignore missing file */
+    }
 
     this._desktopEnvironment = GLib.getenv("XDG_CURRENT_DESKTOP") || "GNOME";
     this._sessionType = GLib.getenv("XDG_SESSION_TYPE") || "Wayland/X11";

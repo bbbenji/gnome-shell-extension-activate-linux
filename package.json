@@ -1,0 +1,26 @@
+{
+  "name": "activate-linux",
+  "version": "1.0.0",
+  "description": "A GNOME extension that adds an \"Activate Linux\" watermark to your desktop, inspired by the \"Activate Windows\" watermark.",
+  "main": "extension.js",
+  "scripts": {
+    "lint": "eslint *.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bbbenji/gnome-shell-extension-activate-linux.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bbbenji/gnome-shell-extension-activate-linux/issues"
+  },
+  "homepage": "https://github.com/bbbenji/gnome-shell-extension-activate-linux#readme",
+  "devDependencies": {
+    "eslint": "^9.39.3",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5"
+  }
+}
