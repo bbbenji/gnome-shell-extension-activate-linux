@@ -46,5 +46,10 @@
       <summary>Show overlay over all windows</summary>
       <description>Whether to show the watermark overlaying all windows instead of just the desktop background.</description>
     </key>
+    <key name="toggle-show-over-windows-shortcut" type="as">
+      <default><![CDATA[['<Super><Alt>w']]]></default>
+      <summary>Toggle show over windows shortcut</summary>
+      <description>Keyboard shortcut to toggle whether the watermark overlays all windows.</description>
+    </key>
   </schema>
 </schemalist>

@@ -1,8 +1,8 @@
-import Gio from 'gi://Gio';
 import Adw from 'gi://Adw';
 import Gtk from 'gi://Gtk';
 import Gdk from 'gi://Gdk';
 import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import {ShortcutSettingWidget} from './shortcut_widget.js';
 
 export default class ActivateLinuxPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
@@ -165,6 +165,15 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
             settings.set_boolean('show-over-windows', overlayRow.active);
         });
         positionGroup.add(overlayRow);
+
+        // Toggle Shortcut
+        const shortcutRow = new ShortcutSettingWidget(
+            settings,
+            'toggle-show-over-windows-shortcut',
+            _('Toggle Shortcut'),
+            _('Press Backspace to clear')
+        );
+        positionGroup.add(shortcutRow);
 
         window.add(page);
     }

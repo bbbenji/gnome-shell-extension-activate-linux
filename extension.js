@@ -1,7 +1,7 @@
-import Gio from "gi://Gio";
 import GLib from "gi://GLib";
 import St from "gi://St";
-import Clutter from "gi://Clutter";
+import Meta from "gi://Meta";
+import Shell from "gi://Shell";
 
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
@@ -39,6 +39,17 @@ export default class ActivateLinuxExtension extends Extension {
       this._debouncedUpdate.bind(this),
     );
 
+    Main.wm.addKeybinding(
+      "toggle-show-over-windows-shortcut",
+      this._settings,
+      Meta.KeyBindingFlags.NONE,
+      Shell.ActionMode.ALL,
+      () => {
+        const current = this._settings.get_boolean("show-over-windows");
+        this._settings.set_boolean("show-over-windows", !current);
+      }
+    );
+
     this._updateUI();
   }
 
@@ -57,6 +68,8 @@ export default class ActivateLinuxExtension extends Extension {
       Main.layoutManager.disconnect(this._monitorsChangedId);
       this._monitorsChangedId = null;
     }
+
+    Main.wm.removeKeybinding("toggle-show-over-windows-shortcut");
 
     if (this._container) {
       if (this._container.get_parent()) {

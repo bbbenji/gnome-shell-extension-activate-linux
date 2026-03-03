@@ -1,0 +1,28 @@
+# Compiled GNOME schemas
+schemas/gschemas.compiled
+
+# Packaged extension files
+*.zip
+*.tar.gz
+*.tar.xz
+
+# Common editor and IDE files
+.vscode/
+.idea/
+*.swp
+*~
+*.bak
+
+# Build directories
+build/
+dist/
+_build/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
