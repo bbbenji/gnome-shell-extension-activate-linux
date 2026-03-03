@@ -13,11 +13,11 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
                     'shortcut', 'shortcut', 'shortcut',
                     GObject.ParamFlags.READWRITE,
                     ''
-                )
+                ),
             },
             Signals: {
-                changed: { param_types: [GObject.TYPE_STRING] }
-            }
+                changed: {param_types: [GObject.TYPE_STRING]},
+            },
         }, this);
     }
 
@@ -25,7 +25,7 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
         super({
             title: label,
             subtitle: sublabel,
-            activatable: true
+            activatable: true,
         });
 
         this.shortcutBox = new Gtk.Box({
@@ -33,7 +33,7 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
             halign: Gtk.Align.CENTER,
             spacing: 5,
             hexpand: false,
-            vexpand: false
+            vexpand: false,
         });
 
         this._key = key;
@@ -44,7 +44,7 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
             disabled_text: _('New accelerator…'),
             valign: Gtk.Align.CENTER,
             hexpand: false,
-            vexpand: false
+            vexpand: false,
         });
 
         this.shortcutBox.append(this.shortLabel);
@@ -52,7 +52,7 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
         // Bind signals
         this.connect('activated', this._onActivated.bind(this));
         this.bind_property('shortcut', this.shortLabel, 'accelerator', GObject.BindingFlags.DEFAULT);
-        
+
         const strv = this._settings.get_strv(this._key);
         this.shortcut = strv.length > 0 ? strv[0] : '';
 
@@ -73,7 +73,7 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
         const content = new Adw.StatusPage({
             title: _('New accelerator…'),
             description: this._description,
-            icon_name: 'preferences-desktop-keyboard-shortcuts-symbolic'
+            icon_name: 'preferences-desktop-keyboard-shortcuts-symbolic',
         });
 
         this._editor = new Adw.Window({
@@ -82,7 +82,7 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
             transient_for: widget.get_root(),
             width_request: 480,
             height_request: 320,
-            content
+            content,
         });
 
         this._editor.add_controller(ctl);
@@ -104,24 +104,24 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
             return Gdk.EVENT_STOP;
         }
 
-        if (!this.isValidBinding(mask, keycode, keyval) || !this.isValidAccel(mask, keyval)) {
+        if (!this.isValidBinding(mask, keycode, keyval) || !this.isValidAccel(mask, keyval))
             return Gdk.EVENT_STOP;
-        }
+
 
         this.saveShortcut(keyval, keycode, mask);
         return Gdk.EVENT_STOP;
     }
 
     saveShortcut(keyval, keycode, mask) {
-        if (!keyval && !keycode) {
+        if (!keyval && !keycode)
             this.shortcut = '';
-        } else {
+        else
             this.shortcut = Gtk.accelerator_name_with_keycode(null, keyval, keycode, mask);
-        }
+
 
         this.emit('changed', this.shortcut);
         this._settings.set_strv(this._key, this.shortcut ? [this.shortcut] : []);
-        
+
         if (this._editor) {
             this._editor.destroy();
             this._editor = null;
@@ -132,7 +132,7 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
         return [
             Gdk.KEY_Home, Gdk.KEY_Left, Gdk.KEY_Up, Gdk.KEY_Right, Gdk.KEY_Down,
             Gdk.KEY_Page_Up, Gdk.KEY_Page_Down, Gdk.KEY_End, Gdk.KEY_Tab,
-            Gdk.KEY_KP_Enter, Gdk.KEY_Return, Gdk.KEY_Mode_switch
+            Gdk.KEY_KP_Enter, Gdk.KEY_Return, Gdk.KEY_Mode_switch,
         ].includes(keyval);
     }
 

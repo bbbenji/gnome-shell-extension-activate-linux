@@ -60,7 +60,7 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
             title: _('Font Color (CSS/RGBA)'),
             text: settings.get_string('font-color'),
         });
-        
+
         // Setup ColorDialogButton
         const colorDialog = new Gtk.ColorDialog();
         const colorButton = new Gtk.ColorDialogButton({
@@ -68,7 +68,7 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
             valign: Gtk.Align.CENTER,
             tooltip_text: _('Choose Font Color'),
         });
-        
+
         // Helper to convert GTK color to CSS string
         function rgbaToCssString(rgba) {
             return `rgba(${Math.round(rgba.red * 255)}, ${Math.round(rgba.green * 255)}, ${Math.round(rgba.blue * 255)}, ${rgba.alpha.toFixed(2)})`;
@@ -84,13 +84,13 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
         fontColorRow.connect('notify::text', () => {
             const currentText = fontColorRow.text;
             settings.set_string('font-color', currentText);
-            
+
             // Sync with color button if valid
             const newRgba = new Gdk.RGBA();
             if (newRgba.parse(currentText))
                 colorButton.set_rgba(newRgba);
         });
-        
+
         // Update text entry when color button changes
         colorButton.connect('notify::rgba', () => {
             const rgba = colorButton.get_rgba();
@@ -246,7 +246,7 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
                 step_increment: 1,
             }),
             value: settings.get_int('monitor-index'),
-            sensitive: (currentPref === 'index'),
+            sensitive: currentPref === 'index',
         });
         monitorIndexRow.connect('notify::value', () => {
             settings.set_int('monitor-index', monitorIndexRow.value);
@@ -255,7 +255,7 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
 
         monitorPrefRow.connect('notify::selected', () => {
             settings.set_string('monitor-preference', monitorPrefs[monitorPrefRow.selected]);
-            monitorIndexRow.sensitive = (monitorPrefs[monitorPrefRow.selected] === 'index');
+            monitorIndexRow.sensitive = monitorPrefs[monitorPrefRow.selected] === 'index';
         });
 
         window.add(page);
