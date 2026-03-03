@@ -1,7 +1,9 @@
-import js from "@eslint/js";
+import gnomeRecommended from "eslint-config-gnome/src/configs/gnome-recommended.js";
+import gnomeJsdoc from "eslint-config-gnome/src/configs/gnome-jsdoc.js";
 
 export default [
-  js.configs.recommended,
+  ...gnomeRecommended,
+  ...gnomeJsdoc,
   {
     languageOptions: {
       ecmaVersion: 2022,
@@ -24,7 +26,24 @@ export default [
     },
     rules: {
       "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
-      "no-empty": ["error", { "allowEmptyCatch": true }]
+      "no-empty": ["error", { "allowEmptyCatch": true }],
+      "camelcase": ["error", { "properties": "never" }],
+      "consistent-return": "error",
+      "eqeqeq": ["error", "smart"],
+      "key-spacing": ["error", {
+          "mode": "minimum",
+          "beforeColon": false,
+          "afterColon": true
+      }],
+      "prefer-arrow-callback": "error",
+      "prefer-const": ["error", { "destructuring": "all" }],
+      "jsdoc/require-param-description": "off",
+      "jsdoc/require-jsdoc": ["error", {
+          "exemptEmptyFunctions": true,
+          "publicOnly": {
+              "esm": true
+          }
+      }]
     }
   }
 ];

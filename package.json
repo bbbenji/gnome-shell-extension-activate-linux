@@ -20,6 +20,7 @@
   "homepage": "https://github.com/bbbenji/gnome-shell-extension-activate-linux#readme",
   "devDependencies": {
     "eslint": "^9.39.3",
+    "eslint-config-gnome": "git+https://gitlab.gnome.org/World/javascript/eslint-config-gnome.git#c479d059e8d9ea99c3b53c2ea43abf7fdb05eb51",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5"
   }
