@@ -14,33 +14,26 @@ export default class ActivateLinuxExtension extends Extension {
 
         this._osName = 'Linux';
         this._kernelVersion = 'Unknown kernel';
-        Gio.File.new_for_path('/etc/os-release').load_contents_async(
-            null,
-            (file, res) => {
-                try {
-                    const [, contents] = file.load_contents_finish(res);
-                    const osRelease = new TextDecoder().decode(contents);
-                    const prettyNameMatch = osRelease.match(
-                        /^PRETTY_NAME="?(.*?)"?$/m
-                    );
-                    if (prettyNameMatch) {
-                        this._osName = prettyNameMatch[1];
-                        if (this._settings) this._updateUI();
-                    }
-                } catch {
-                    /* ignore missing file */
+        Gio.File.new_for_path('/etc/os-release').load_contents_async(null, (file, res) => {
+            try {
+                const [, contents] = file.load_contents_finish(res);
+                const osRelease = new TextDecoder().decode(contents);
+                const prettyNameMatch = osRelease.match(/^PRETTY_NAME="?(.*?)"?$/m);
+                if (prettyNameMatch) {
+                    this._osName = prettyNameMatch[1];
+                    if (this._settings) this._updateUI();
                 }
+            } catch {
+                /* ignore missing file */
             }
-        );
+        });
 
         Gio.File.new_for_path('/proc/sys/kernel/osrelease').load_contents_async(
             null,
             (file, res) => {
                 try {
                     const [, contents] = file.load_contents_finish(res);
-                    this._kernelVersion = new TextDecoder()
-                        .decode(contents)
-                        .trim();
+                    this._kernelVersion = new TextDecoder().decode(contents).trim();
                     if (this._settings) this._updateUI();
                 } catch {
                     /* ignore missing file */
@@ -48,8 +41,7 @@ export default class ActivateLinuxExtension extends Extension {
             }
         );
 
-        this._desktopEnvironment =
-            GLib.getenv('XDG_CURRENT_DESKTOP') || 'GNOME';
+        this._desktopEnvironment = GLib.getenv('XDG_CURRENT_DESKTOP') || 'GNOME';
         this._sessionType = GLib.getenv('XDG_SESSION_TYPE') || 'Wayland/X11';
 
         this._settingsChangedId = this._settings.connect(
@@ -147,10 +139,7 @@ export default class ActivateLinuxExtension extends Extension {
             .replace(/\{\{OS\}\}/g, this._osName)
             .replace(/\{\{KERNEL\}\}/g, this._kernelVersion)
             .replace(/\{\{DE\}\}/g, this._desktopEnvironment)
-            .replace(
-                /\{\{WAYLAND\}\}/gi,
-                this._sessionType === 'wayland' ? 'Wayland' : ''
-            )
+            .replace(/\{\{WAYLAND\}\}/gi, this._sessionType === 'wayland' ? 'Wayland' : '')
             .replace(/\{\{X11\}\}/gi, this._sessionType === 'x11' ? 'X11' : '')
             .replace(/\{\{WAYLAND_X11\}\}/gi, this._sessionType);
     }
@@ -158,15 +147,11 @@ export default class ActivateLinuxExtension extends Extension {
     _debouncedUpdate() {
         if (this._updateTimeoutId) GLib.source_remove(this._updateTimeoutId);
 
-        this._updateTimeoutId = GLib.timeout_add(
-            GLib.PRIORITY_DEFAULT,
-            100,
-            () => {
-                this._updateUI();
-                this._updateTimeoutId = null;
-                return GLib.SOURCE_REMOVE;
-            }
-        );
+        this._updateTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
+            this._updateUI();
+            this._updateTimeoutId = null;
+            return GLib.SOURCE_REMOVE;
+        });
     }
 
     _updateUI() {
@@ -176,12 +161,10 @@ export default class ActivateLinuxExtension extends Extension {
         const targetMonitors = [];
 
         if (monitorPref === 'all') {
-            for (let i = 0; i < Main.layoutManager.monitors.length; i++)
-                targetMonitors.push(i);
+            for (let i = 0; i < Main.layoutManager.monitors.length; i++) targetMonitors.push(i);
         } else if (monitorPref === 'index') {
             const idx = this._settings.get_int('monitor-index');
-            if (idx >= 0 && idx < Main.layoutManager.monitors.length)
-                targetMonitors.push(idx);
+            if (idx >= 0 && idx < Main.layoutManager.monitors.length) targetMonitors.push(idx);
             else targetMonitors.push(Main.layoutManager.primaryIndex);
         } else {
             // primary
@@ -189,8 +172,7 @@ export default class ActivateLinuxExtension extends Extension {
         }
 
         const rawMainMessage = this._settings.get_string('main-message');
-        const rawSecondaryMessage =
-            this._settings.get_string('secondary-message');
+        const rawSecondaryMessage = this._settings.get_string('secondary-message');
         const mainMessage = this._replacePlaceholders(rawMainMessage);
         const secondaryMessage = this._replacePlaceholders(rawSecondaryMessage);
 
@@ -199,20 +181,16 @@ export default class ActivateLinuxExtension extends Extension {
         const fontColor = this._settings.get_string('font-color');
         const fontSize = this._settings.get_int('font-size');
         const showOverWindows = this._settings.get_boolean('show-over-windows');
-        const showOnLockscreen =
-            this._settings.get_boolean('show-on-lockscreen');
+        const showOnLockscreen = this._settings.get_boolean('show-on-lockscreen');
         const isLocked = Main.sessionMode.currentMode === 'unlock-dialog';
 
         // If the screen is locked and we're not configured to show on it, hide everything.
         if (isLocked && !showOnLockscreen) return;
 
         const enableShadow = this._settings.get_boolean('enable-text-shadow');
-        const enableBackground =
-            this._settings.get_boolean('enable-background');
+        const enableBackground = this._settings.get_boolean('enable-background');
 
-        const shadowCss = enableShadow
-            ? 'text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);'
-            : '';
+        const shadowCss = enableShadow ? 'text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);' : '';
         const mainStyle = `font-family: '${fontFace}'; font-style: ${fontStyle}; color: ${fontColor}; font-size: ${fontSize}pt; ${shadowCss}`;
         const secondaryStyle = `font-family: '${fontFace}'; font-style: ${fontStyle}; color: ${fontColor}; font-size: ${Math.round(fontSize * 0.6)}pt; ${shadowCss}`;
         const containerStyle = enableBackground
@@ -225,8 +203,7 @@ export default class ActivateLinuxExtension extends Extension {
 
             if (isLocked && showOnLockscreen)
                 Main.layoutManager.screenShieldGroup.add_child(data.container);
-            else if (showOverWindows)
-                Main.layoutManager.uiGroup.add_child(data.container);
+            else if (showOverWindows) Main.layoutManager.uiGroup.add_child(data.container);
             else Main.layoutManager._backgroundGroup.add_child(data.container);
 
             data.mainLabel.set_text(mainMessage);

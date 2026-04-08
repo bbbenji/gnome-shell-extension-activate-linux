@@ -1,5 +1,6 @@
 import gnomeRecommended from 'eslint-config-gnome/src/configs/gnome-recommended.js';
 import gnomeJsdoc from 'eslint-config-gnome/src/configs/gnome-jsdoc.js';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default [
     ...gnomeRecommended,
@@ -52,4 +53,5 @@ export default [
             ],
         },
     },
+    eslintConfigPrettier,
 ];

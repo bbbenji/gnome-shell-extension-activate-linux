@@ -114,10 +114,7 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
             return Gdk.EVENT_STOP;
         }
 
-        if (
-            !this.isValidBinding(mask, keycode, keyval) ||
-            !this.isValidAccel(mask, keyval)
-        )
+        if (!this.isValidBinding(mask, keycode, keyval) || !this.isValidAccel(mask, keyval))
             return Gdk.EVENT_STOP;
 
         this.saveShortcut(keyval, keycode, mask);
@@ -128,19 +125,11 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
         if (!keyval && !keycode) {
             this.shortcut = '';
         } else {
-            this.shortcut = Gtk.accelerator_name_with_keycode(
-                null,
-                keyval,
-                keycode,
-                mask
-            );
+            this.shortcut = Gtk.accelerator_name_with_keycode(null, keyval, keycode, mask);
         }
 
         this.emit('changed', this.shortcut);
-        this._settings.set_strv(
-            this._key,
-            this.shortcut ? [this.shortcut] : []
-        );
+        this._settings.set_strv(this._key, this.shortcut ? [this.shortcut] : []);
 
         if (this._editor) {
             this._editor.destroy();
@@ -179,9 +168,6 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
     }
 
     isValidAccel(mask, keyval) {
-        return (
-            Gtk.accelerator_valid(keyval, mask) ||
-            (keyval === Gdk.KEY_Tab && mask !== 0)
-        );
+        return Gtk.accelerator_valid(keyval, mask) || (keyval === Gdk.KEY_Tab && mask !== 0);
     }
 };

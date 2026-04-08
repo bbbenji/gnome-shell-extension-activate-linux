@@ -243,9 +243,10 @@ escape-string-regexp@^4.0.0:
   resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz"
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
-"eslint-config-gnome@git+https://gitlab.gnome.org/World/javascript/eslint-config-gnome.git#c479d059e8d9ea99c3b53c2ea43abf7fdb05eb51":
+"eslint-config-gnome@https://gitlab.gnome.org/World/javascript/eslint-config-gnome/-/archive/c479d059e8d9ea99c3b53c2ea43abf7fdb05eb51/eslint-config-gnome-c479d059e8d9ea99c3b53c2ea43abf7fdb05eb51.tar.gz":
   version "1.0.0"
-  resolved "git+https://gitlab.gnome.org/World/javascript/eslint-config-gnome.git#c479d059e8d9ea99c3b53c2ea43abf7fdb05eb51"
+  resolved "https://gitlab.gnome.org/World/javascript/eslint-config-gnome/-/archive/c479d059e8d9ea99c3b53c2ea43abf7fdb05eb51/eslint-config-gnome-c479d059e8d9ea99c3b53c2ea43abf7fdb05eb51.tar.gz"
+  integrity sha512-GDRPxdFnUXy89UwdH9oLtD2ECCh0n+AucyEQMvOWUJ4WOSOpNr8ek0qXaAxcFanZBjIJeDoPr1wsD5zIB3JsUw==
   dependencies:
     "@eslint/config-helpers" "^0.2.2"
     "@eslint/js" "^9.28.0"

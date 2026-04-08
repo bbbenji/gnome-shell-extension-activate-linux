@@ -1,60 +1,58 @@
 name: Release GNOME Extension
 
 on:
-    push:
-        branches: [main, master]
-    pull_request:
-        branches: [main, master]
-    release:
-        types: [created]
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  release:
+    types: [created]
 
 permissions:
-    contents: write
+  contents: write
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnome-shell
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Run Linter
+        run: npm run lint
+
+      - name: Compile Schemas
+        run: glib-compile-schemas schemas/
+
+      - name: Pack Extension
+        run: gnome-extensions pack --force --extra-source=README.md --extra-source=shortcut_widget.js --extra-source=LICENSE
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: activate-linux-extension
+          path: activate-linux@bbbenji.shell-extension.zip
+
+      - name: Publish Release Asset
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: activate-linux@bbbenji.shell-extension.zip
         env:
-            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-
-            - name: Install Dependencies
-              run: |
-                  sudo apt-get update
-                  sudo apt-get install -y gnome-shell
-
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 24
-                  cache: 'npm'
-
-            - name: Install NPM dependencies
-              run: npm ci
-
-            - name: Run Linter
-              run: npm run lint
-
-            - name: Compile Schemas
-              run: glib-compile-schemas schemas/
-
-            - name: Pack Extension
-              run: gnome-extensions pack --force --extra-source=README.md --extra-source=shortcut_widget.js --extra-source=LICENSE
-
-            - name: Upload Build Artifact
-              uses: actions/upload-artifact@v4
-              with:
-                  name: activate-linux-extension
-                  path: activate-linux@bbbenji.shell-extension.zip
-
-            - name: Publish Release Asset
-              if: github.event_name == 'release'
-              uses: softprops/action-gh-release@v2
-              with:
-                  files: activate-linux@bbbenji.shell-extension.zip
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

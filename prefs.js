@@ -107,9 +107,7 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
         // Text Shadow
         const textShadowRow = new Adw.SwitchRow({
             title: _('Enable Text Shadow'),
-            subtitle: _(
-                'Adds a shadow to the text to improve readability on varied backgrounds'
-            ),
+            subtitle: _('Adds a shadow to the text to improve readability on varied backgrounds'),
             active: settings.get_boolean('enable-text-shadow'),
         });
         textShadowRow.connect('notify::active', () => {
@@ -120,9 +118,7 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
         // Background Plate
         const backgroundRow = new Adw.SwitchRow({
             title: _('Enable Background Plate'),
-            subtitle: _(
-                'Adds a semi-transparent dark background box behind the text'
-            ),
+            subtitle: _('Adds a semi-transparent dark background box behind the text'),
             active: settings.get_boolean('enable-background'),
         });
         backgroundRow.connect('notify::active', () => {
@@ -137,12 +133,7 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
         page.add(positionGroup);
 
         // Corner Position
-        const cornerPositions = [
-            'bottom-right',
-            'bottom-left',
-            'top-right',
-            'top-left',
-        ];
+        const cornerPositions = ['bottom-right', 'bottom-left', 'top-right', 'top-left'];
         const cornerPositionRow = new Adw.ComboRow({
             title: _('Corner Position'),
             model: Gtk.StringList.new([
@@ -153,15 +144,9 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
             ]),
         });
         const currentCorner = settings.get_string('corner-position');
-        cornerPositionRow.selected = Math.max(
-            0,
-            cornerPositions.indexOf(currentCorner)
-        );
+        cornerPositionRow.selected = Math.max(0, cornerPositions.indexOf(currentCorner));
         cornerPositionRow.connect('notify::selected', () => {
-            settings.set_string(
-                'corner-position',
-                cornerPositions[cornerPositionRow.selected]
-            );
+            settings.set_string('corner-position', cornerPositions[cornerPositionRow.selected]);
         });
         positionGroup.add(cornerPositionRow);
 
@@ -258,10 +243,7 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
             ]),
         });
         const currentPref = settings.get_string('monitor-preference');
-        monitorPrefRow.selected = Math.max(
-            0,
-            monitorPrefs.indexOf(currentPref)
-        );
+        monitorPrefRow.selected = Math.max(0, monitorPrefs.indexOf(currentPref));
         monitorsGroup.add(monitorPrefRow);
 
         // Monitor Index
@@ -281,12 +263,8 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
         monitorsGroup.add(monitorIndexRow);
 
         monitorPrefRow.connect('notify::selected', () => {
-            settings.set_string(
-                'monitor-preference',
-                monitorPrefs[monitorPrefRow.selected]
-            );
-            monitorIndexRow.sensitive =
-                monitorPrefs[monitorPrefRow.selected] === 'index';
+            settings.set_string('monitor-preference', monitorPrefs[monitorPrefRow.selected]);
+            monitorIndexRow.sensitive = monitorPrefs[monitorPrefRow.selected] === 'index';
         });
 
         window.add(page);
