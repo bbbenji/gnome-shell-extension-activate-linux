@@ -13,17 +13,15 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gnome-shell
+          sudo apt-get install -y libglib2.0-bin zip
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -41,7 +39,16 @@ jobs:
         run: glib-compile-schemas schemas/
 
       - name: Pack Extension
-        run: gnome-extensions pack --force --extra-source=README.md --extra-source=shortcut_widget.js --extra-source=LICENSE
+        run: |
+          zip -r activate-linux@bbbenji.shell-extension.zip \
+            extension.js \
+            metadata.json \
+            stylesheet.css \
+            prefs.js \
+            shortcut_widget.js \
+            LICENSE \
+            README.md \
+            schemas/
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
