@@ -2,6 +2,7 @@ import GLib from 'gi://GLib';
 import St from 'gi://St';
 import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
+import Gio from 'gi://Gio';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
@@ -13,24 +14,31 @@ export default class ActivateLinuxExtension extends Extension {
 
         this._osName = 'Linux';
         this._kernelVersion = 'Unknown kernel';
-        try {
-            const [successOS, contentsOS] = GLib.file_get_contents('/etc/os-release');
-            if (successOS) {
-                const osRelease = new TextDecoder().decode(contentsOS);
+        Gio.File.new_for_path('/etc/os-release').load_contents_async(null, (file, res) => {
+            try {
+                const [, contents] = file.load_contents_finish(res);
+                const osRelease = new TextDecoder().decode(contents);
                 const prettyNameMatch = osRelease.match(/^PRETTY_NAME="?(.*?)"?$/m);
-                if (prettyNameMatch)
+                if (prettyNameMatch) {
                     this._osName = prettyNameMatch[1];
+                    if (this._settings)
+                        this._updateUI();
+                }
+            } catch {
+                /* ignore missing file */
             }
-        } catch {
-        /* ignore missing file */
-        }
-        try {
-            const [successKernel, contentsKernel] = GLib.file_get_contents('/proc/sys/kernel/osrelease');
-            if (successKernel)
-                this._kernelVersion = new TextDecoder().decode(contentsKernel).trim();
-        } catch {
-        /* ignore missing file */
-        }
+        });
+
+        Gio.File.new_for_path('/proc/sys/kernel/osrelease').load_contents_async(null, (file, res) => {
+            try {
+                const [, contents] = file.load_contents_finish(res);
+                this._kernelVersion = new TextDecoder().decode(contents).trim();
+                if (this._settings)
+                    this._updateUI();
+            } catch {
+                /* ignore missing file */
+            }
+        });
 
         this._desktopEnvironment = GLib.getenv('XDG_CURRENT_DESKTOP') || 'GNOME';
         this._sessionType = GLib.getenv('XDG_SESSION_TYPE') || 'Wayland/X11';
