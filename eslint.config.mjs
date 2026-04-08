@@ -21,29 +21,35 @@ export default [
         setTimeout: "readonly",
         clearTimeout: "readonly",
         TextDecoder: "readonly",
-        TextEncoder: "readonly"
-      }
+        TextEncoder: "readonly",
+      },
     },
     rules: {
-      "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
-      "no-empty": ["error", { "allowEmptyCatch": true }],
-      "camelcase": ["error", { "properties": "never" }],
+      "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+      "no-empty": ["error", { allowEmptyCatch: true }],
+      camelcase: ["error", { properties: "never" }],
       "consistent-return": "error",
-      "eqeqeq": ["error", "smart"],
-      "key-spacing": ["error", {
-          "mode": "minimum",
-          "beforeColon": false,
-          "afterColon": true
-      }],
+      eqeqeq: ["error", "smart"],
+      "key-spacing": [
+        "error",
+        {
+          mode: "minimum",
+          beforeColon: false,
+          afterColon: true,
+        },
+      ],
       "prefer-arrow-callback": "error",
-      "prefer-const": ["error", { "destructuring": "all" }],
+      "prefer-const": ["error", { destructuring: "all" }],
       "jsdoc/require-param-description": "off",
-      "jsdoc/require-jsdoc": ["error", {
-          "exemptEmptyFunctions": true,
-          "publicOnly": {
-              "esm": true
-          }
-      }]
-    }
-  }
+      "jsdoc/require-jsdoc": [
+        "error",
+        {
+          exemptEmptyFunctions: true,
+          publicOnly: {
+            esm: true,
+          },
+        },
+      ],
+    },
+  },
 ];
