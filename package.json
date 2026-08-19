@@ -4,8 +4,11 @@
   "description": "A GNOME extension that adds an \"Activate Linux\" watermark to your desktop, inspired by the \"Activate Windows\" watermark.",
   "main": "extension.js",
   "scripts": {
-    "lint": "eslint *.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "compile-schemas": "glib-compile-schemas schemas/"
   },
   "repository": {
     "type": "git",
@@ -13,7 +16,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/bbbenji/gnome-shell-extension-activate-linux/issues"
   },
@@ -22,6 +25,7 @@
     "eslint": "^9.39.3",
     "eslint-config-gnome": "https://gitlab.gnome.org/World/javascript/eslint-config-gnome/-/archive/c479d059e8d9ea99c3b53c2ea43abf7fdb05eb51/eslint-config-gnome-c479d059e8d9ea99c3b53c2ea43abf7fdb05eb51.tar.gz",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5"
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1"
   }
 }

@@ -1,29 +1,17 @@
 import gnomeRecommended from 'eslint-config-gnome/src/configs/gnome-recommended.js';
 import gnomeJsdoc from 'eslint-config-gnome/src/configs/gnome-jsdoc.js';
-import eslintConfigPrettier from 'eslint-config-prettier';
+import prettierRecommended from 'eslint-plugin-prettier/recommended';
 
 export default [
+    {
+        ignores: ['node_modules/', 'extract-eslint/'],
+    },
     ...gnomeRecommended,
     ...gnomeJsdoc,
     {
         languageOptions: {
             ecmaVersion: 2022,
             sourceType: 'module',
-            globals: {
-                ARGV: 'readonly',
-                global: 'readonly',
-                log: 'readonly',
-                logError: 'readonly',
-                print: 'readonly',
-                printerr: 'readonly',
-                window: 'readonly',
-                document: 'readonly',
-                console: 'readonly',
-                setTimeout: 'readonly',
-                clearTimeout: 'readonly',
-                TextDecoder: 'readonly',
-                TextEncoder: 'readonly',
-            },
         },
         rules: {
             'no-unused-vars': ['warn', {argsIgnorePattern: '^_'}],
@@ -53,5 +41,7 @@ export default [
             ],
         },
     },
-    eslintConfigPrettier,
+    // Enforces .prettierrc.json as lint errors; must stay last so it can turn
+    // off the stylistic rules the configs above would otherwise fight over.
+    prettierRecommended,
 ];

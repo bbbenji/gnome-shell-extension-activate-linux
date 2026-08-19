@@ -59,7 +59,7 @@ The settings are divided into the following categories:
 - **Main Message**: The primary text displayed in the watermark (default: "Activate Linux").
 - **Secondary Message**: The secondary text displayed below the main message (default: "Go to Settings to activate Linux.").
 
-You can use the following dynamic placeholders in your messages:
+You can use the following dynamic placeholders in your messages (they are case-insensitive):
 
 - `{{OS}}`: Your operating system name (e.g., Ubuntu, Fedora)
 - `{{KERNEL}}`: Your current Linux kernel version
@@ -79,8 +79,6 @@ You can use the following dynamic placeholders in your messages:
 
 ### Layout & Position
 
-- **Monitor Preference**: Choose which monitor(s) to display the watermark on ("Primary Monitor", "All Monitors", or a "Specific Monitor").
-- **Monitor Index**: If "Specific Monitor" is selected, specify the index of the monitor (starts at 0).
 - **Corner Position**: Choose which corner of the screen to display the watermark (Bottom Right, Bottom Left, Top Right, Top Left).
 - **X Position**: The horizontal distance (margin) from the selected corner edge.
 - **Y Position**: The vertical distance (margin) from the selected corner edge.
@@ -90,6 +88,11 @@ You can use the following dynamic placeholders in your messages:
 - **Show over all windows**: When enabled, the watermark overlays all open windows. When disabled, it stays on the desktop background.
 - **Show on Lock Screen**: When enabled, the watermark is visible when the screen is locked.
 - **Toggle overlay shortcut**: A customizable keyboard shortcut to quickly toggle the "Show over all windows" behavior (default: `<Super><Alt>w`).
+
+### Monitors
+
+- **Monitor Preference**: Choose which monitor(s) to display the watermark on ("Primary Display Only", "All Displays", or "Specific Display").
+- **Display Index**: If "Specific Display" is selected, specify the index of the monitor (starts at 0). Out-of-range values fall back to the primary display.
 
 ## Screenshots
 

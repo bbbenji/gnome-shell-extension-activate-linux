@@ -1,0 +1,4 @@
+[submodule "extract-eslint"]
+	path = extract-eslint
+	url = https://gitlab.gnome.org/GNOME/gnome-shell-extensions.git
+	shallow = true

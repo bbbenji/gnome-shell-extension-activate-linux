@@ -1,0 +1,6 @@
+node_modules/
+extract-eslint/
+package-lock.json
+
+# Prose formatting isn't enforced; keep the docs as authored.
+*.md
