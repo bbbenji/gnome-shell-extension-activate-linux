@@ -95,17 +95,19 @@ export default class ActivateLinuxExtension extends Extension {
         this._pendingLevel = 0;
         this._keybindingAdded = false;
 
-        this._osName = 'Linux';
+        this._osName = GLib.get_os_info('PRETTY_NAME') ?? GLib.get_os_info('NAME') ?? 'Linux';
         this._kernelVersion = 'Unknown kernel';
         this._desktopEnvironment = GLib.getenv('XDG_CURRENT_DESKTOP') || 'GNOME';
         this._sessionType = GLib.getenv('XDG_SESSION_TYPE') || 'Wayland/X11';
 
         // These reads can outlive disable(), so tie them to a cancellable.
         this._cancellable = new Gio.Cancellable();
-        this._readFile('/etc/os-release', (text) => {
-            const prettyName = text.match(/^PRETTY_NAME="?(.*?)"?$/m);
-            if (prettyName) this._osName = prettyName[1];
-        });
+        if (this._osName === 'Linux') {
+            this._readFile('/etc/os-release', (text) => {
+                const prettyName = text.match(/^PRETTY_NAME="?(.*?)"?$/m);
+                if (prettyName) this._osName = prettyName[1];
+            });
+        }
         this._readFile('/proc/sys/kernel/osrelease', (text) => {
             this._kernelVersion = text.trim();
         });
@@ -125,7 +127,7 @@ export default class ActivateLinuxExtension extends Extension {
             TOGGLE_SHORTCUT_KEY,
             this._settings,
             Meta.KeyBindingFlags.NONE,
-            Shell.ActionMode.ALL,
+            Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
             () => {
                 const showOverWindows = this._settings.get_boolean('show-over-windows');
                 this._settings.set_boolean('show-over-windows', !showOverWindows);
@@ -283,6 +285,9 @@ export default class ActivateLinuxExtension extends Extension {
      */
     _resolveMonitorIndices() {
         const {monitors, primaryIndex} = Main.layoutManager;
+        if (!monitors || monitors.length === 0) return [];
+
+        const defaultIndex = primaryIndex >= 0 && primaryIndex < monitors.length ? primaryIndex : 0;
 
         switch (this._settings.get_string('monitor-preference')) {
             case 'all':
@@ -290,10 +295,10 @@ export default class ActivateLinuxExtension extends Extension {
             case 'index': {
                 const index = this._settings.get_int('monitor-index');
                 const valid = index >= 0 && index < monitors.length;
-                return [valid ? index : primaryIndex];
+                return [valid ? index : defaultIndex];
             }
             default:
-                return [primaryIndex];
+                return [defaultIndex];
         }
     }
 
@@ -375,13 +380,14 @@ export default class ActivateLinuxExtension extends Extension {
     _expandPlaceholders(text) {
         if (!text) return '';
 
+        const sessionType = this._sessionType.toLowerCase();
         const values = {
             OS: this._osName,
             KERNEL: this._kernelVersion,
             DE: this._desktopEnvironment,
             WAYLAND_X11: this._sessionType,
-            WAYLAND: this._sessionType === 'wayland' ? 'Wayland' : '',
-            X11: this._sessionType === 'x11' ? 'X11' : '',
+            WAYLAND: sessionType === 'wayland' ? 'Wayland' : '',
+            X11: sessionType === 'x11' ? 'X11' : '',
         };
 
         return text.replace(PLACEHOLDER_RE, (_match, name) => values[name.toUpperCase()]);

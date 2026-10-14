@@ -1,6 +1,6 @@
 {
   "name": "activate-linux",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "description": "A GNOME extension that adds an \"Activate Linux\" watermark to your desktop, inspired by the \"Activate Windows\" watermark.",
   "main": "extension.js",
   "scripts": {

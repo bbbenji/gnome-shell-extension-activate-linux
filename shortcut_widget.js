@@ -104,27 +104,45 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
         const [accelerator] = this._settings.get_strv(this._key);
         this.shortcut = accelerator ?? '';
 
+        this._settingsChangedId = this._settings.connect(`changed::${this._key}`, () => {
+            const [accel] = this._settings.get_strv(this._key);
+            this.shortcut = accel ?? '';
+        });
+
+        this.connect('destroy', () => {
+            if (this._settingsChangedId) {
+                this._settings.disconnect(this._settingsChangedId);
+                this._settingsChangedId = 0;
+            }
+            this._closeEditor();
+        });
+
         this.add_suffix(this._shortcutLabel);
     }
 
     _onActivated(widget) {
+        if (this._editor) return;
+
         const controller = new Gtk.EventControllerKey();
 
-        this._editor = new Adw.Window({
-            modal: true,
-            transient_for: widget.get_root(),
-            width_request: 480,
-            height_request: 320,
-            content: new Adw.StatusPage({
+        this._editor = new Adw.Dialog({
+            title: _('New accelerator…'),
+            content_width: 480,
+            content_height: 320,
+            child: new Adw.StatusPage({
                 title: _('New accelerator…'),
                 description: this._description,
                 icon_name: 'preferences-desktop-keyboard-shortcuts-symbolic',
             }),
         });
 
+        this._editor.connect('closed', () => {
+            this._editor = null;
+        });
+
         controller.connect('key-pressed', this._onKeyPressed.bind(this));
         this._editor.add_controller(controller);
-        this._editor.present();
+        this._editor.present(widget);
     }
 
     _onKeyPressed(_controller, keyval, keycode, state) {
@@ -132,7 +150,7 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
         mask &= ~Gdk.ModifierType.LOCK_MASK;
 
         if (!mask && keyval === Gdk.KEY_Escape) this._closeEditor();
-        else if (keyval === Gdk.KEY_BackSpace) this._saveShortcut('');
+        else if (!mask && keyval === Gdk.KEY_BackSpace) this._saveShortcut('');
         else if (isValidBinding(mask, keycode, keyval) && isValidAccel(mask, keyval))
             this._saveShortcut(Gtk.accelerator_name_with_keycode(null, keyval, keycode, mask));
 
@@ -153,7 +171,10 @@ export const ShortcutSettingWidget = class extends Adw.ActionRow {
     }
 
     _closeEditor() {
-        this._editor?.destroy();
+        if (!this._editor) return;
+
+        const editor = this._editor;
         this._editor = null;
+        editor.close();
     }
 };
