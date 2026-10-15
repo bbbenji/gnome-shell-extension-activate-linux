@@ -119,22 +119,12 @@ export default class ActivateLinuxExtension extends Extension {
         this._monitorsChangedId = Main.layoutManager.connect('monitors-changed', () =>
             this._scheduleUpdate(Update.REBUILD)
         );
-        this._sessionModeChangedId = Main.sessionMode.connect('updated', () =>
-            this._scheduleUpdate(Update.REBUILD)
-        );
+        this._sessionModeChangedId = Main.sessionMode.connect('updated', () => {
+            this._syncKeybinding();
+            this._scheduleUpdate(Update.REBUILD);
+        });
 
-        const action = Main.wm.addKeybinding(
-            TOGGLE_SHORTCUT_KEY,
-            this._settings,
-            Meta.KeyBindingFlags.NONE,
-            Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
-            () => {
-                const showOverWindows = this._settings.get_boolean('show-over-windows');
-                this._settings.set_boolean('show-over-windows', !showOverWindows);
-            }
-        );
-        this._keybindingAdded = action !== Meta.KeyBindingAction.NONE;
-
+        this._syncKeybinding();
         this._update(Update.REBUILD);
     }
 
@@ -167,13 +157,42 @@ export default class ActivateLinuxExtension extends Extension {
             this._sessionModeChangedId = 0;
         }
 
-        if (this._keybindingAdded) {
-            Main.wm.removeKeybinding(TOGGLE_SHORTCUT_KEY);
-            this._keybindingAdded = false;
-        }
+        this._removeKeybinding();
 
         this._destroyContainers();
         this._settings = null;
+    }
+
+    /** Keep keybindings active only when the session is unlocked. */
+    _syncKeybinding() {
+        const isLocked =
+            Main.sessionMode.isLocked || Main.sessionMode.currentMode === 'unlock-dialog';
+
+        if (isLocked) this._removeKeybinding();
+        else this._addKeybinding();
+    }
+
+    _addKeybinding() {
+        if (this._keybindingAdded || !this._settings) return;
+
+        const action = Main.wm.addKeybinding(
+            TOGGLE_SHORTCUT_KEY,
+            this._settings,
+            Meta.KeyBindingFlags.NONE,
+            Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
+            () => {
+                const showOverWindows = this._settings.get_boolean('show-over-windows');
+                this._settings.set_boolean('show-over-windows', !showOverWindows);
+            }
+        );
+        this._keybindingAdded = action !== Meta.KeyBindingAction.NONE;
+    }
+
+    _removeKeybinding() {
+        if (!this._keybindingAdded) return;
+
+        Main.wm.removeKeybinding(TOGGLE_SHORTCUT_KEY);
+        this._keybindingAdded = false;
     }
 
     /**
