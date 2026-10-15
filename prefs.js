@@ -196,7 +196,7 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
      */
     _buildFontGroup(settings) {
         const group = new Adw.PreferencesGroup({
-            title: _('Font & Colors'),
+            title: _('Font and Colors'),
             description: _('Configure the watermark appearance'),
         });
 
@@ -230,7 +230,7 @@ export default class ActivateLinuxPreferences extends ExtensionPreferences {
      */
     _buildLayoutGroup(settings) {
         const group = new Adw.PreferencesGroup({
-            title: _('Layout & Position'),
+            title: _('Layout and Position'),
             description: _('Configure where the watermark sits on the screen'),
         });
 

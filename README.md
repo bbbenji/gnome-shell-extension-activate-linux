@@ -68,7 +68,7 @@ You can use the following dynamic placeholders in your messages (they are case-i
 - `{{WAYLAND}}`: Returns "Wayland" if you are currently using Wayland, otherwise empty.
 - `{{X11}}`: Returns "X11" if you are currently using X11, otherwise empty.
 
-### Font & Colors
+### Font and Colors
 
 - **Font Face**: The font family to use for the watermark (e.g., "Sans").
 - **Font Style**: The font style to use (e.g., "Normal", "Italic").
@@ -77,7 +77,7 @@ You can use the following dynamic placeholders in your messages (they are case-i
 - **Enable Text Shadow**: Adds a subtle shadow to the text for better readability against light backgrounds.
 - **Enable Background Plate**: Adds a dark translucent background behind the text.
 
-### Layout & Position
+### Layout and Position
 
 - **Corner Position**: Choose which corner of the screen to display the watermark (Bottom Right, Bottom Left, Top Right, Top Left).
 - **X Position**: The horizontal distance (margin) from the selected corner edge.
